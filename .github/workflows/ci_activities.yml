@@ -7,5 +7,6 @@ jobs:
     testing:
         runs-on: ubuntu-latest
         steps:
-            - run: |
+            - name: Echo Test
+              run: |
                 echo "Testing 1 2 3"
