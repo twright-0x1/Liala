@@ -20,6 +20,7 @@ jobs:
                 args: >
                     --failOnCVSS 7
                     --enableRetired
+                    --enableExperimental
                     --log reports/dc_log.txt
             - name: Upload test results
               uses: actions/upload-artifact@master
