@@ -18,8 +18,7 @@ jobs:
                 format: 'HTML'
                 out: 'reports' # this is the default, no need to specify unless you wish to override it
                 args: >
-                    --failOnCVSS 7
-                    --enableRetired
+                    --failOnCVSS 6
                     --enableExperimental
                     --log reports/dc_log.txt
             - name: Upload test results
