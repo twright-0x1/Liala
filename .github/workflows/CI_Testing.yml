@@ -1,15 +1,17 @@
-name: Dependency-Check
+name: CI Testing
 
 on:
     push:
         branches: ["main"]
 jobs:
-    depcheck_test:
+    static_tests:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-            - name: Run dependency-check
+            - name: Unit Tests
+              run: python -m unittest -v 
+            - name: Dependency-Check
               uses: dependency-check/Dependency-Check_Action@main
               id: Depcheck
               with:
@@ -21,8 +23,8 @@ jobs:
                     --failOnCVSS 6
                     --enableExperimental
                     --log reports/dc_log.txt
-            - name: Upload test results
+            - name: Upload Test Results
               uses: actions/upload-artifact@master
               with:
-                name: Report dependency-check results
+                name: Report unit test and dependency-check results
                 path: ${{github.workspace}}/reports
