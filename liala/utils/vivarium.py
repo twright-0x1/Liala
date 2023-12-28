@@ -25,8 +25,12 @@ class Vivarium:
         self.ingress_lock = threading.Lock()
         self.egress_lock = threading.Lock()
 
-        # Asyncio event loop
-        self.loop = asyncio.get_event_loop()
+        # Asyncio event loop.  Create an event loop object
+        self.loop = asyncio.new_event_loop()
+
+        # Set the current event loop for the current OS thread
+        asyncio.set_event_loop(self.loop)
+
 
     async def async_input(self, prompt):
         """
