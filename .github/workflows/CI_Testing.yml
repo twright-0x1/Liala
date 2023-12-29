@@ -46,12 +46,12 @@ jobs:
             - name: Test Summary
               uses: test-summary/action@v2
               with:
-                paths: "${{github.workspace}}/reports/*.xml"
-                output: test-summary.md
+                paths: "./reports/*.xml"
+                output: ./reports/test-summary.md
               if: always()
             - name: Upload test summary
               uses: actions/upload-artifact@master
               with:
                 name: test-summary
-                path: ${{github.workspace}}/reports
+                path: ./reports/test-summary.md
               if: always()
