@@ -43,16 +43,16 @@ jobs:
               uses: actions/upload-artifact@master
               with:
                 name: Report dependency-check verbose results
-                path: ./reports/dc_log.txt
+                path: ${{github.workspace}}/reports/dc_log.txt
             - name: Test Summary
               uses: test-summary/action@v2
               with:
-                paths: "./reports/*.xml"
+                paths: "reports/*.xml"
                 output: test-summary.md
               if: always()
             - name: Upload test summary
               uses: actions/upload-artifact@master
               with:
                 name: test-summary
-                path: test-summary.md
+                path: ${{github.workspace}}/reports/test-summary.md
               if: always()
