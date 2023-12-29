@@ -17,13 +17,14 @@ jobs:
               run: |
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
-                pip install unittest-xml-reporting
             - name: Run Unit Tests
-              run: python -m xmlrunner discover -o junit/test-results.xml
+              run: |
+                pip install unittest-xml-reporting
+                python -m xmlrunner discover -o junit/test-results.xml
             - name: Lint with Ruff
               run: |
                 pip install ruff
-                ruff --output-format=github .
+                ruff check --output-format=github .
               continue-on-error: true
             - name: Run Dependency-Check
               uses: dependency-check/Dependency-Check_Action@main
@@ -31,14 +32,20 @@ jobs:
               with:
                 project: 'Liala'
                 path: '.'
-                format: 'HTML'
-                out: 'reports' # this is the default, no need to specify unless you wish to override it
+                format: 'JUNIT'
+                out: 'junit'
                 args: >
-                    --failOnCVSS 6
+                    --junitFailOnCVSS 6
                     --enableExperimental
                     --log reports/dc_log.txt
-            - name: Upload Test Results
+                    --out junit/dependency-check.xml
+            - name: Upload Dependency-Check Verbose Results
               uses: actions/upload-artifact@master
               with:
-                name: Report unit test and dependency-check results
+                name: Report dependency-check results
                 path: ${{github.workspace}}/reports
+            - name: Publish Test Report
+              uses: mikepenz/action-junit-report@v4
+              if: success() || failure() # always run even if the previous step fails
+              with:
+                report_paths: 'junit/*.xml'
