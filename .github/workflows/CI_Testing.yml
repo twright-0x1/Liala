@@ -35,15 +35,14 @@ jobs:
                 format: 'JUNIT'
                 out: 'reports'
                 args: >
-                    --junitFailOnCVSS 6
+                    ---junitFailOnCVSS 6
                     --enableExperimental
-                    --log dc_log.txt
-                    --out dependency-check-results.xml
+                    --log reports/dc_log.txt
             - name: Upload Dependency-Check Verbose Results
               uses: actions/upload-artifact@master
               with:
                 name: Report dependency-check verbose results
-                path: ${{github.workspace}}/reports/dc_log.txt
+                path: ${{github.workspace}}/reports
             - name: Test Summary
               uses: test-summary/action@v2
               with:
@@ -54,5 +53,5 @@ jobs:
               uses: actions/upload-artifact@master
               with:
                 name: test-summary
-                path: ${{github.workspace}}/reports/test-summary.md
+                path: ${{github.workspace}}/reports
               if: always()
