@@ -15,7 +15,7 @@ class TestHelperFunctions(unittest.TestCase):
 
         # Define the expected output from get_menu_choice() given the above user input
         #
-        expected_output = 2
+        expected_output = 3
 
         # Use the patch function as a context manager to redirect print() output to a fake stdout object
         #
