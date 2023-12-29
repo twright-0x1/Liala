@@ -47,7 +47,7 @@ jobs:
             - name: Test Summary
               uses: test-summary/action@v2
               with:
-                paths: "${{github.workspace}}/reports/*.xml"
+                paths: "**/reports/*.xml"
                 output: test-summary.md
               if: always()
             - name: Upload test summary
