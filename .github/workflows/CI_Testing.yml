@@ -26,7 +26,7 @@ jobs:
             - name: Lint with Ruff
               run: |
                 pip install ruff
-                ruff check --output-format=github .
+                ruff check --output-format=junit --output-file=./reports/ruff.xml .
               # If our linting fails, note it and keep going
               if: always()
             - name: Run Dependency-Check
