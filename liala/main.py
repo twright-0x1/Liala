@@ -1,4 +1,4 @@
-from utils.helper_functions import *
+from utils.helper_functions import get_menu_choice
 from utils.sentence_parser import SentenceParser
 from flask import Flask, render_template, request
 
@@ -26,9 +26,13 @@ sentence = "The quick, brown fox jumps over the lazy dog."
 result = parser.parse_sentence(sentence)
 print(result)
 
-# choices = ["Option 1", "Option 2", "Option 3"]
-# choice = get_menu_choice(choices)
-# print(f"You chose option {choice}")
+choices = ["Option 1", "Option 2", "Option 3"]
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+    # No need to cause our test program to hang
+    #
+    if False:
+        choice = get_menu_choice(choices)
+        print(f"You chose option {choice}")
