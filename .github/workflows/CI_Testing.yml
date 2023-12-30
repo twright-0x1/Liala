@@ -21,11 +21,14 @@ jobs:
               run: |
                 pip install unittest-xml-reporting
                 python -m xmlrunner discover -o ./reports
+              # If our unit testing fails, note it and keep going
+              if: always()
             - name: Lint with Ruff
               run: |
                 pip install ruff
                 ruff check --output-format=github .
-              continue-on-error: true
+              # If our linting fails, note it and keep going
+              if: always()
             - name: Run Dependency-Check
               uses: dependency-check/Dependency-Check_Action@main
               id: Depcheck
@@ -38,20 +41,27 @@ jobs:
                     --junitFailOnCVSS 6
                     --enableExperimental
                     --log reports/dc_log.txt
-            # - name: Upload Dependency-Check Verbose Results
-            #   uses: actions/upload-artifact@master
-            #   with:
-            #     name: Report dependency-check verbose results
-            #     path: ${{github.workspace}}/reports
+                # Uncomment/comment the following to permit/disable
+                # saving the verbose dc_log.txt file as an artifact
+                #
+                # - name: Upload Dependency-Check Verbose Results
+                #   uses: actions/upload-artifact@master
+                #   with:
+                #     name: Report dependency-check verbose results
+                #     path: ${{github.workspace}}/reports/dc_log.txt
             - name: Test Summary
               uses: test-summary/action@v2
               with:
                 paths: "./reports/*.xml"
                 output: ./reports/test-summary.md
+              # If our summary of JUnit test output fails, note
+              # it and keep going
               if: always()
             - name: Upload test summary
               uses: actions/upload-artifact@master
               with:
                 name: test-summary
                 path: ./reports/test-summary.md
+              # If uploading the test-summary report as an artifact
+              # fails, note it and keep going
               if: always()
