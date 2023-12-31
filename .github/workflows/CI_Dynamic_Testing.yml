@@ -1,4 +1,4 @@
-name: CI Static Testing
+name: CI Dynamic Testing
 
 on:
     push:
