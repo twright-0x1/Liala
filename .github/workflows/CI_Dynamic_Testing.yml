@@ -1,0 +1,75 @@
+name: CI Static Testing
+
+on:
+    push:
+        branches: ["main"]
+jobs:
+    CI_Testing:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: '3.12'
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+            #
+            # Execute Liala on our runner; we can then get ZAP going to
+            # scan the running Liala Web service.
+            #
+            - name: "Execute Liala"
+              run: python liala/main.py & # Browse to http://localhost:5000
+            #
+            # Get and run ZAP (authenticated, baseline scan).  First,
+            # we present an unauthenticated scan.
+            #
+            - name: "Unauthenticated ZAP Scan"
+              uses: zaproxy/action-baseline@v0.10.0
+              with:
+                token: ${{ secrets.GITHUB_TOKEN }}
+                docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
+                target: 'http://localhost:5000'
+            #
+            # Now, on to an example authenticated scan...  Here, it is presumed that
+            # we've manually used ZAP earlier to browse the target Web service.  We
+            # would have done this to configure and then save a ZAP context file, which
+            # among other configuration items, would include a user ID and password.
+            #
+            # After replacing the password in the context file with the string
+            # "PLACEHOLDER," we would store the context file in GitHub with our source.
+            #
+            # The following would then be used to replace PLACEHOLDER in the context file
+            # with a password that we've securely stored in GitHub's secrets manager. This
+            # would be done to prevent storing the password in the context file, in our
+            # repository.
+            #
+            # - name: "Context File Setup"
+            #   env:
+            #     # Set a previously defined secret as an environment variable for this step:
+            #     B64PASSWORD: ${{secrets.B64PASSWORD}}
+            #   # Replace the "PLACEHOLDER" string in the context file with the real base64-encoded password:
+            #   run: |
+            #     sed -ie "s/PLACEHOLDER/${B64PASSWORD}/" $GITHUB_WORKSPACE/ctx_file.context
+            #
+            # Another option for authenticated scanning is to avoid the login and embed
+            # an authentication token into all of ZAP's requests.  Here, one would configure
+            # an enviroment variable (called an "Environment secret" in GitHub) to contain
+            # the token.
+            #
+            # See https://github.com/marketplace/actions/zap-baseline-scan and 
+            # https://www.zaproxy.org/docs/docker/baseline-scan/
+            # 
+            # - name: "Authenticated ZAP Scan"
+            #  uses: zaproxy/action-baseline@v0.10.0
+            #  with:
+            #    token: ${{ secrets.GITHUB_TOKEN }}
+            #    docker_name: 'owasp/zap2docker-stable'
+            #    target: 'http://localhost:3000'
+            #    # Additional command line options
+            #    # -j   runs the AJAX spider
+            #    # -U   specifies which user to select from the context file
+            #    cmd_options: -U "admin@juice-sh.op" -n /zap/wrk/ctx_file.context            

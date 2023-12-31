@@ -1,4 +1,4 @@
-name: CI Testing
+name: CI Static Testing
 
 on:
     push:
@@ -13,7 +13,7 @@ jobs:
               uses: actions/setup-python@v4
               with:
                 python-version: '3.12'
-            - name: Install dependencies
+            - name: Install Dependencies
               run: |
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
@@ -48,20 +48,20 @@ jobs:
                 #   uses: actions/upload-artifact@master
                 #   with:
                 #     name: Report dependency-check verbose results
-                #     path: ${{github.workspace}}/reports/dc_log.txt
-            - name: Test Summary
+                #     path: ${{github.workspace}}/reports/dc_log.txt              
+            - name: Summarize All Static Test Results
               uses: test-summary/action@v2
               with:
                 paths: "./reports/*.xml"
-                output: ./reports/test-summary.md
+                output: ./reports/static_test_summary.md
               # If our summary of JUnit test output fails, note
               # it and keep going
               if: always()
-            - name: Upload test summary
+            - name: Upload Static Test Summary
               uses: actions/upload-artifact@master
               with:
-                name: test-summary
-                path: ./reports/test-summary.md
+                name: static_test_summary
+                path: ./reports/static_test_summary.md
               # If uploading the test-summary report as an artifact
               # fails, note it and keep going
               if: always()
